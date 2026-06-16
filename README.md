@@ -7,7 +7,11 @@ and switch between models on the fly (Opus 4.8 / Sonnet 4.6 / Haiku 4.5).
 
 - 💬 Multi-turn chat with per-chat conversation memory
 - 🔀 Switch models live with `/model` (inline buttons)
-- 🧹 `/reset` to clear history
+- ⭐️ **Subscriptions**: free plan = 10 requests on Haiku 4.5; subscribers get
+  all models (Opus 4.8 / Sonnet 4.6 / Haiku 4.5) without limits
+- 💳 Paid via **Telegram Stars** (no card / external provider) or granted by an admin
+- 📋 **Command menu**: commands appear when you type `/` and the menu button
+  shows the command list
 - 🔐 Optional allowlist of Telegram user IDs
 - 🔒 Secrets kept in `.env` (never committed)
 
@@ -39,14 +43,33 @@ and switch between models on the fly (Opus 4.8 / Sonnet 4.6 / Haiku 4.5).
 
 ## Commands
 
-| Command   | Description                          |
-| --------- | ------------------------------------ |
-| `/start`  | Welcome message + current model      |
-| `/model`  | Switch the Claude model              |
-| `/reset`  | Clear this chat's conversation       |
-| `/help`   | Show help                            |
+| Command       | Description                                  |
+| ------------- | -------------------------------------------- |
+| `/start`      | Welcome + your current plan                  |
+| `/model`      | Switch the Claude model (locked on free plan)|
+| `/status`     | Your plan and remaining free requests        |
+| `/subscribe`  | Buy a subscription (Telegram Stars)          |
+| `/reset`      | Clear this chat's conversation               |
+| `/help`       | Show help                                    |
+
+Admin-only (set `ADMIN_USER_IDS` in `.env`):
+
+| Command                 | Description                          |
+| ----------------------- | ------------------------------------ |
+| `/grant <user_id> [days]` | Grant a subscription manually      |
+| `/revoke <user_id>`       | Revoke a subscription              |
 
 Any other text message is sent to Claude.
+
+## Subscriptions
+
+- **Free plan:** `claude-haiku-4-5` only, `FREE_REQUEST_LIMIT` (default 10)
+  requests. Other models are locked.
+- **Subscriber:** all models, no request limit, for `SUBSCRIPTION_DAYS` days.
+- Payment uses **Telegram Stars** (`XTR`) — no payment provider token needed.
+  Tune `SUBSCRIPTION_PRICE_STARS` and `SUBSCRIPTION_DAYS` in `.env`.
+- User state (usage count, subscription expiry) is stored in `bot_state.json`
+  (git-ignored).
 
 ## Models
 

@@ -17,9 +17,17 @@ AVAILABLE_MODELS: dict[str, str] = {
     "claude-haiku-4-5": "Haiku 4.5 · fastest",
 }
 
+# Free plan: only this model, limited number of requests.
+FREE_MODEL = "claude-haiku-4-5"
+FREE_REQUEST_LIMIT = 10
+
 DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "claude-opus-4-8")
 if DEFAULT_MODEL not in AVAILABLE_MODELS:
     DEFAULT_MODEL = "claude-opus-4-8"
+
+# Subscription (Telegram Stars). provider_token is empty for Stars (XTR).
+SUBSCRIPTION_PRICE_STARS = int(os.getenv("SUBSCRIPTION_PRICE_STARS", "150"))
+SUBSCRIPTION_DAYS = int(os.getenv("SUBSCRIPTION_DAYS", "30"))
 
 # Anthropic generation settings.
 MAX_TOKENS = 8000
@@ -29,8 +37,18 @@ SYSTEM_PROMPT = (
     "Use Telegram-friendly Markdown when it helps readability."
 )
 
-# How many turns (user+assistant pairs) to keep in memory per chat.
+# How many messages to keep in memory per chat.
 MAX_HISTORY_MESSAGES = 40
+
+# Commands shown in the Telegram "/" menu and the menu button.
+BOT_COMMANDS: list[tuple[str, str]] = [
+    ("start", "Запустить бота / приветствие"),
+    ("model", "Выбрать модель Claude"),
+    ("status", "Мой план и остаток запросов"),
+    ("subscribe", "Оформить подписку"),
+    ("reset", "Очистить историю чата"),
+    ("help", "Помощь"),
+]
 
 
 def _parse_user_ids(raw: str | None) -> set[int]:
@@ -52,6 +70,7 @@ class Settings:
     telegram_token: str
     anthropic_api_key: str
     allowed_user_ids: set[int] = field(default_factory=set)
+    admin_user_ids: set[int] = field(default_factory=set)
 
 
 def load_settings() -> Settings:
@@ -74,4 +93,5 @@ def load_settings() -> Settings:
         telegram_token=token,
         anthropic_api_key=api_key,
         allowed_user_ids=_parse_user_ids(os.getenv("ALLOWED_USER_IDS")),
+        admin_user_ids=_parse_user_ids(os.getenv("ADMIN_USER_IDS")),
     )
